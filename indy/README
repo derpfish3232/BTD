@@ -1,0 +1,111 @@
+indy README
+
+Overview:
+
+    My indy has a lot of classes. It is a tower defense game, where the
+    The main ones are Game, Monkey, Bloon, Dart, Board, and Tile.
+    The enums Direction, Upgrade, Targetting, NormalType, and BloonType are similarly vital to
+    the game. Less important is the MonkeySelector enum, the TakenNode, EmptyNode, BloonsButton,
+    PoppedUp, and PaneOrganizer classes. It has one interface, being the TreeNode.
+    It also has the Constants and App classes.There are multiple subclasses of darts
+    (FragBomb, Seeking, and Bullet), monkeys (TripleShot, TackShooter, Seeker, and
+    BombTower), and bloons (Red, Blue, Green, Yellow,
+    Pink, Black, and Lead).
+
+    PaneOrganizer:
+        PaneOrganizer is the top-level graphics class, creating the root, board
+        panes, and BloonButton.
+    Game:
+        The Game class is the top level logic class. It handles the implementation of
+        mouse events and things of that nature. It runs multiple timelines for the game to run
+        under different scenarios like inRound and spawning bloons in the next round.
+        It keeps tracks of money, lives, round, the bloons in the round, the darts in the round,
+        and the monkeys. It also has the button to pick a base monkey, of which there is only one
+        even though I have multiple types of monkeys.The Game is associated with Monkey,
+        Bloon, Dart, and Board.
+    Monkey:
+        The Monkey superclass does a lot. It acts as a wrapper class for the body. It
+        has a hitbox to see what bloons are in range. It also contains the logic for the upgrade
+        pathing, selling, and changing targets. When the monkey can shoot, it does so by spawning
+        darts and then goes back on cooldown before being able to do it again. I have different
+        types of monkeys, as shown by the following subclasses. The Monkey is associated with
+        Dart and Bloon, as well as TakenNode and EmptyNode.
+
+        Subclasses:
+            TripleShot: Allows for 3 darts to be shot.
+            Sniper: Allows for the darts to only hit the targetted bloon.
+            Seeker: Allows for the darts to ricochet off each other and go to the next target
+            TackShooter: Allows for 8 darts to be shot.
+            BombTower: Allows for the darts to explode into smaller darts
+
+    Bloon:
+        The Bloon Superclass is basically just a wrapper class with some additional
+        functionality for movement and for when it gets popped. In most cases,
+        it spawns the bloons' children or their parent if it is a regen bloon.
+        The subclasses are such that lead cannot be hit until some upgrades are
+        bought and spawns two black bloon, the black bloon cannot be hit by
+        the darts that can hit leads and spawns two pink bloons, the pink bloon
+        spawns a yellow bloon, the yellow bloon spawns a green bloon, the green
+        bloon spawns a blue bloon, the blue bloon spawns a red bloon, and the red
+        bloon spawns nothing. Through the BloonType enum, some bloons can be camo
+        or regen, which makes the bloons not able to be seen by some bloons, and
+        the regen bloons can regenerate layers to its max original layer.
+
+    Dart:
+        The Dart superclass is basically a wrapper class for the rectangle but has
+        some other logic other than movement including intersections and, as a superclass,
+        allows for the implementation of special darts.
+    Board:
+        The Board class creates the 2D array of tiles, as well as recursively creates a path
+        for the bloons to traverse across. The board is, since it is comprised of tiles,
+        associated with Tile.
+    Tile:
+        The Tile class is a wrapper class for the square/tile image. It contains a direction
+        to tell the bloon where to go next. It has functionality such that if it is not a path,
+        a monkey cannot be placed on it.
+    TakenNode:
+        The TakenNode class implements the TreeNode interface so that the BTree of upgrades works.
+    EmptyNode:
+        The EmptyNode class implements the TreeNode interface.
+        It has very little functionality, mostly only able to insert a new node.
+    BloonsButton:
+        The bloonbutton class is like a custom button type of thing to handle selection of
+        the monkeys before placing them.
+    PoppedUp:
+        The PoppedUp class is more of a graphics class that simulates an animation of the
+        bloon pop.
+
+Design Choices:
+    I use three superclasses - bloon, monkey, and dart - because each subtype share a lot of
+    code and functionality but a few differences. I use a bst to insert the upgrades
+    for the monkey in a pathing to my liking and design. This makes it so that further
+    upgrades are restricted by past ones, requiring a higher level of planning ahead when
+    playing the game. I use HashSets throughout many different classes - the darts so
+    they know what Bloons they've already hit so they can't hit it again when they have
+    a pierce higher than one, and most importantly the monkeys so that it doesn't see
+    duplicate bloons. While a linkedlist or a deque could have been used to get
+    the first and last bloon in O(1) time, I would need to check through the list anyway
+    to check for when positions changes and for strong and close. The algorithm I use
+    instead is a simple max-value of an array type of algorithm. I think the most
+    complex algorithm I use is the board generation, which recursively finds a random
+    path that reaches the end and is all connected. A randomly generated board may count
+    as a bell and whistle though that is up to you (PLS PLS PLS PLS PLS!!! ^_^). I guess
+    I also drew some of the spritework for the bloons and paths but idk cuz I did that
+    to procrastinate XD.
+
+Known Bugs:
+    There is a really niche edge case where a child bloon would get stuck on a corner.
+    I tried a lot of debugging through print lines and simulating pops by making a round
+    of densely put together regen pink bloons that pop every frame but the green bloons
+    regen to the pink bloons and then printing the current direction, its position, and
+    the associated tile. I thought I fixed this issue by adding checks for last
+    horizontal and vertical direction, but that only mitigated the issue. I know that
+    the problem is whether I do floor or ceiling on the calculation for the tile location
+    but I cannot tell what case to do when for a corner when there is a new bloon because
+    I passed in the previous vertical and horizontal direction, but the issue still exists
+    sometimes. From what I can tell, it seems to occur more frequently when I have the multi
+    shot upgrade equipped but that does not seem at all correlated to the issue of bloon
+    spawning.
+
+Approx. Time Spent: ~130 hours???? I have no idea, time is not real to me anymore. This is
+probably an underestimation but like its so bad for the amount of time i put in.
